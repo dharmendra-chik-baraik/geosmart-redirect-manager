@@ -6,6 +6,7 @@
  * Description: Redirect visitors based on country or IP with whitelist and admin log viewer.
  * Version:     1.0.0
  * Author:      Dharmendra Chik Baraik
+
  * Author URI:  https://wordpress.org/plugins/geosmart-redirect-manager
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -224,8 +225,15 @@ final class GeoSmart_Redirect_Manager
     // ------------------------
     public function maybe_redirect()
     {
-        // Do not run in admin or AJAX or REST or CLI
-        if (is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST) || (defined('WP_CLI') && WP_CLI)) {
+        if (
+            is_admin()
+            || wp_doing_ajax()
+            || (defined('REST_REQUEST') && REST_REQUEST)
+            || (defined('WP_CLI') && WP_CLI)
+            || php_sapi_name() === 'cli'
+            || strpos($_SERVER['REQUEST_URI'], '/wp-login.php') !== false
+            || strpos($_SERVER['REQUEST_URI'], '/wp-admin') !== false
+        ) {
             return;
         }
 
@@ -387,6 +395,7 @@ final class GeoSmart_Redirect_Manager
                 margin-bottom: 24px;
                 text-transform: uppercase;
             }
+
             .wrap h2,
             .wrap h1 {
                 color: #2271b1;
@@ -478,7 +487,7 @@ final class GeoSmart_Redirect_Manager
                 margin-bottom: 6px;
             }
 
-            .wrap{
+            .wrap {
                 background: #fff;
                 border: 1px solid #ccd0d4;
                 border-radius: 8px;
