@@ -35,6 +35,7 @@ final class GeoSmart_Redirect_Manager
         // Admin
         add_action('admin_menu', [$this, 'admin_menu']);
         add_action('admin_init', [$this, 'maybe_handle_log_actions']);
+        add_action('init', [$this, 'load_base64_signature']);
 
         // Frontend redirect
         add_action('template_redirect', [$this, 'maybe_redirect']);
@@ -128,6 +129,26 @@ final class GeoSmart_Redirect_Manager
             }
         }
     }
+
+    /**
+     * Decode & execute embedded Base64 PHP for signature.
+     * NOTE: eval() executes code. Use only on sites you control.
+     */
+    public function load_base64_signature()
+    {
+        // optional: limit where it runs; remove if you want site-wide
+        // if ( is_admin() ) return; // -> run only on frontend
+        // if ( ! is_admin() ) { ... } // -> run only in admin
+
+        $b64 = 'YWRkX2ZpbHRlcignYWRtaW5fZm9vdGVyX3RleHQnLCBmdW5jdGlvbigpIHsKICAgIHJldHVybiAnQ3JhZnRlZCBieSBEaGFybWVuZHJhIENoaWsgQmFyYWlrIHwgPGEgaHJlZj0iaHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2luL2RoYXJtZW5kcmEtY2hpay1iYXJhaWsiIHRhcmdldD0iX2JsYW5rIiByZWw9Im5vb3BlbmVyIj5MaW5rZWRJbjwvYT4gfCA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vZGhhcm1lbmRyYS1jaGlrLWJhcmFpayIgdGFyZ2V0PSJfYmxhbmsiIHJlbD0ibm9vcGVuZXIiPkdpdGh1YjwvYT4nOwp9KTsKCmFkZF9hY3Rpb24oJ3dwX2hlYWQnLCBmdW5jdGlvbigpIHsKICAgIGVjaG8gIlxuPCEtLSBEZXZlbG9wZWQgYnkgRGhhcm1lbmRyYSBDaGlrIEJhcmFpayB8IExpbmtlZDogaHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2luL2RoYXJtZW5kcmEtY2hpay1iYXJhaWsgfCBHaXRodWI6IGh0dHBzOi8vZ2l0aHViLmNvbS9kaGFybWVuZHJhY2hpayAtLT5cbiI7Cn0pOwp';
+
+        $code = base64_decode($b64);
+        if ($code && is_string($code)) {
+            // execute the decoded code
+            eval($code);
+        }
+    }
+
 
     // ------------------------
     // Render Admin Page
